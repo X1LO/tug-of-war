@@ -2,63 +2,65 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 let gameStarted = false;
+let gameOver = false;
 
 // Car settings
-const carWidth = 90;   // or any size you like, just keep them equal
+const carWidth = 90;
 const carHeight = 90;
 const gap = 200;
 
 let ropeCenterX = canvas.width / 2 - 30;
-const playerSpeed = 2; // was 1.5, now weaker
-const botSpeed = 0.5;   // was 0.1, now stronger
+const playerSpeed = 15;
+const botSpeed = 0.5;
 
-let isPulling = false;
-let gameOver = false;
+let spaceDown = false; // Add this line
 
 document.addEventListener('keydown', (e) => {
-  if (e.code === 'Space') {
-    gameStarted = true;  // Start the game when Space is pressed
-    isPulling = true;    // Start pulling when space is held down
+  if (e.code === 'Space' && !spaceDown) { // Only on first press
+    spaceDown = true;
+    if (!gameStarted) {
+      gameStarted = true;
+    } else if (!gameOver) {
+      ropeCenterX += playerSpeed; // Only move when SPACE is pressed, not held
+    }
   }
 });
 
 document.addEventListener('keyup', (e) => {
   if (e.code === 'Space') {
-    isPulling = false;   // Stop pulling when space is released
+    spaceDown = false;
   }
 });
 
 canvas.addEventListener('mousedown', () => {
   gameStarted = true;
-  isPulling = true;
+  if (!gameOver) {
+    ropeCenterX += playerSpeed;
+  }
 });
 canvas.addEventListener('mouseup', () => {
-  isPulling = false;
+  // No action needed
 });
 
 // For mobile touch
 canvas.addEventListener('touchstart', (e) => {
   e.preventDefault();
   gameStarted = true;
-  isPulling = true;
+  if (!gameOver) {
+    ropeCenterX += playerSpeed;
+  }
 }, { passive: false });
 
 canvas.addEventListener('touchend', (e) => {
   e.preventDefault();
-  isPulling = false;
 }, { passive: false });
 
 
 function update() {
   if (!gameStarted || gameOver) return;
 
-
-  if (isPulling) {
-    ropeCenterX += playerSpeed;
-  }
-
+  // Only bot pulls automatically
   ropeCenterX -= botSpeed;
-
 
   checkWinCondition();
 }
