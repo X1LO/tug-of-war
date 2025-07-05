@@ -148,7 +148,7 @@ function checkWinCondition() {
   }
   // If player's car touches or crosses the center line, bot wins
   else if (playerX <= centerLine) {
-    endGame("Bot wins! 😈");
+    endGame("Bot wwinssss! 😈");
   }
 }
 
